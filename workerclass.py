@@ -4,8 +4,6 @@ __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
 """
-This is my design..
-
 
 El objetivo del modulo es implementar la lógica de colaboración con el software TDBRIDGE propietario de EPSON, que
 a traves de un sistema de escritura de ficheros, en formato (.JDF) permite implementar, en este caso, la grabación de
@@ -17,9 +15,7 @@ visor DICOM, y gestione la orden con TDBRIDGE.
 
 
 class JobsDirectoryHandler(object):
-    """
-    Maneja los directorios asociados al trabajo de grabación en curso
-    """
+    
     def __init__(self, jobs_directory, patientid, os_stat):
 
         self.__jobs_directory = jobs_directory
