@@ -61,7 +61,6 @@ class JobsDirectoryHandler(object):
         else:
             return False
 
-
 class OrdersDirectoryHandler(object):
 
     def __init__(self, orders_directory, job_name, order_extension, os_stat):
