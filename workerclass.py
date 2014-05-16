@@ -15,7 +15,7 @@ visor DICOM, y gestione la orden con TDBRIDGE.
 
 
 class JobsDirectoryHandler(object):
-    
+
     def __init__(self, jobs_directory, patientid, os_stat):
 
         self.__jobs_directory = jobs_directory
@@ -44,6 +44,17 @@ class JobsDirectoryHandler(object):
 
         else:
             return ""
+
+    def delete_job_directory(self):
+
+        if self.get_job_directory_path() is not "":
+
+            try:
+                self.__os.rmdir(self.__jobs_directory + "/%s" % self.__patient_id)
+                return True
+
+            except:
+                raise
 
 
 class OrdersFileHandler(object):
