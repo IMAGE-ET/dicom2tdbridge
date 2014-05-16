@@ -10,6 +10,7 @@ from expects import expect
 
 from jobs_worker import OrdersDirectoryHandler
 from jobs_worker import JobsDirectoryHandler
+from jobs_worker import JDFFilesHandler
 
 
 class TestJobsDirectoryHandler(TestCase):
@@ -71,3 +72,36 @@ class TestOrdersDirectoryHandler(TestCase):
     def test_when_i_check_for_extension_and_exist_return_true(self):
 
         expect(self.orders_handling.check_if_order_exist()).to.equal(True)
+
+
+class TestJDFFilesHandler(TestCase):
+
+    def setUp(self):
+
+        self.jdf_needs = Mock()
+        self.jdf_needs.job_directory = "/home/izamarro/workdev/burner2/Test/temp/jobstest"
+        self.jdf_needs.file_name = "9991.JDF"
+        self.jdf_file_path = self.jdf_needs.job_directory + "/%s" % self.jdf_needs.file_name.split(".")[0] + "/%s" % self.jdf_needs.file_name
+
+        self.jdf_handler = JDFFilesHandler(self.jdf_needs.job_directory, self.jdf_needs.file_name.split(".")[0], os)
+
+        self.directory_handler = JobsDirectoryHandler(self.jdf_needs.job_directory,
+                                                      self.jdf_needs.file_name.split(".")[0], os)
+
+        self.directory_handler.create_skel_job_directory()
+
+    def tearDown(self):
+        os.remove(self.jdf_file_path)
+        self.directory_handler.delete_job_directory()
+
+    def test_when_i_check_for_jdf_file_and_not_exist_return_false(self):
+
+        expect(self.jdf_handler.check_if_jdf_exist()).to.equal(False)
+
+    def test_if_jdf_files_is_created(self):
+
+        self.jdf_handler.create_jdf_file()
+        expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
+
+
+
