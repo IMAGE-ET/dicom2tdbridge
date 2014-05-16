@@ -8,8 +8,8 @@ from mock import Mock
 from unittest import TestCase
 from expects import expect
 
-from workerclass import OrdersFileHandler
-from workerclass import JobsDirectoryHandler
+from jobs_worker import OrdersFileHandler
+from jobs_worker import JobsDirectoryHandler
 
 
 class TestJobsDirectoryHandler(TestCase):
