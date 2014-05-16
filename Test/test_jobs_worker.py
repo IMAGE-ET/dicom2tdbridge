@@ -91,17 +91,16 @@ class TestJDFFilesHandler(TestCase):
         self.directory_handler.create_skel_job_directory()
 
     def tearDown(self):
+
         os.remove(self.jdf_file_path)
         self.directory_handler.delete_job_directory()
 
-    def test_when_i_check_for_jdf_file_and_not_exist_return_false(self):
-
-        expect(self.jdf_handler.check_if_jdf_exist()).to.equal(False)
-
-    def test_if_jdf_files_is_created(self):
+    def test_when_check_for_jdf_file_and_exist_return_true(self):
 
         self.jdf_handler.create_jdf_file()
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
+
+
 
 
 
