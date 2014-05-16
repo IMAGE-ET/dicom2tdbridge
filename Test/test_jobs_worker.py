@@ -28,7 +28,7 @@ class TestJobsDirectoryHandler(TestCase):
 
         self.directory_creator.delete_job_directory()
 
-    def test_if_skel_directory_is_created_in_job_directory(self):
+    def test_when_directory_is_created_and_check_it_return_true(self):
 
         expect(self.directory_creator.check_if_job_directory_exist()).to.equal(True)
 
