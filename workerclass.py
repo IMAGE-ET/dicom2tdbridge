@@ -17,7 +17,9 @@ visor DICOM, y gestione la orden con TDBRIDGE.
 
 
 class JobsDirectoryHandler(object):
-
+    """
+    Maneja los directorios asociados al trabajo de grabación en curso
+    """
     def __init__(self, jobs_directory, patientid, os_stat):
 
         self.__jobs_directory = jobs_directory
@@ -46,3 +48,30 @@ class JobsDirectoryHandler(object):
 
         else:
             return ""
+
+class OrdersFileHandler(object):
+
+    def __init__(self, orders_directory, order_extension, os_stat):
+
+        self.__orders_directory = orders_directory
+        self.__os = os_stat
+        self.__extension = order_extension
+
+    def get_order_file_name_askey_and_extension_asvalue(self):
+        """
+        Check if order in special exist, needs .DON, .JDF
+        """
+
+        for orders_files_names in self.__os.listdir(self.__orders_directory):
+
+            if orders_files_names[-4:] == self.__extension:
+
+                return {orders_files_names[:-4]: self.__extension}
+
+            else:
+                return False
+
+
+
+
+
