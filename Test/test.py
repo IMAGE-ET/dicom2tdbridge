@@ -45,8 +45,8 @@ class TestOrdersDirectoryHandler(TestCase):
         self.file_needs.directory = "/home/izamarro/workdev/burner2/Test/temp/orderstest"
         self.file_needs.name = "9991"
         self.file_needs.extension = ".DON"
-        self.file_needs.order_path = self.file_needs.directory + "/%s" % self.file_needs.name + \
-                                     self.file_needs.extension
+        self.file_needs.order_path = self.file_needs.directory + "/%s" \
+                                                                 % self.file_needs.name + self.file_needs.extension
 
         self.orders_handling = OrdersFileHandler(self.file_needs.directory, self.file_needs.extension, os)
 
@@ -59,4 +59,5 @@ class TestOrdersDirectoryHandler(TestCase):
 
     def test_if_return_the_filename_without_file_extension(self):
 
-        expect([self.orders_handling.get_order_file_name_askey_and_extension_asvalue()]).to.equal([{self.file_needs.name: self.file_needs.extension}])
+        expect([self.orders_handling.get_order_file_name_askey_and_extension_asvalue()]).to.equal(
+            [{self.file_needs.name: self.file_needs.extension}])
