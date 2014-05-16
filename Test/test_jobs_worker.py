@@ -8,7 +8,7 @@ from mock import Mock
 from unittest import TestCase
 from expects import expect
 
-from jobs_worker import OrdersFileHandler
+from jobs_worker import OrdersDirectoryHandler
 from jobs_worker import JobsDirectoryHandler
 
 
@@ -22,6 +22,7 @@ class TestJobsDirectoryHandler(TestCase):
         self.date_for_job.absolute_jobpath = self.date_for_job.directory_job + "/%s" % self.date_for_job.patient_id
 
         self.directory_creator = JobsDirectoryHandler(self.date_for_job.directory_job, self.date_for_job.patient_id, os)
+        self.directory_creator.create_skel_job_directory()
 
     def tearDown(self):
 
@@ -29,23 +30,23 @@ class TestJobsDirectoryHandler(TestCase):
 
     def test_if_skel_directory_is_created_in_job_directory(self):
 
-        expect(self.directory_creator.create_skel_job_directory()).to.equal(True)
+        expect(self.directory_creator.check_if_job_directory_exist()).to.equal(True)
 
     def test_if_directory_already_exists_not_try_to_create(self):
 
-        self.directory_creator.create_skel_job_directory()
         expect(self.directory_creator.create_skel_job_directory()).to.equal(False)
 
     def test_if_skel_job_directory_is_deleted(self):
 
-        self.directory_creator.create_skel_job_directory()
-        expect([self.directory_creator.delete_job_directory()]).to.equal([True])
+        self.directory_creator.delete_job_directory()
+        expect([self.directory_creator.check_if_job_directory_exist()]).to.equal([False])
 
     def test_if_dictionary_contain_job_directory_skel(self):
 
         expect(self.directory_creator.get_job_skel()).to.have.keys(
             {"absolute_job_path": self.date_for_job.absolute_jobpath,
              "data_job_path": (self.date_for_job.absolute_jobpath + "/DATA")})
+
 
 class TestOrdersDirectoryHandler(TestCase):
 
@@ -57,8 +58,8 @@ class TestOrdersDirectoryHandler(TestCase):
         self.file_needs.extension = ".DON"
         self.file_needs.order_path = self.file_needs.directory + "/%s" \
                                                                  % self.file_needs.name + self.file_needs.extension
-
-        self.orders_handling = OrdersFileHandler(self.file_needs.directory, self.file_needs.extension, os)
+        self.orders_handling = OrdersDirectoryHandler(self.file_needs.directory,
+                                                      self.file_needs.name, self.file_needs.extension, os)
 
         with open(self.file_needs.order_path, "w") as tempfile:
             tempfile.close()
@@ -67,7 +68,6 @@ class TestOrdersDirectoryHandler(TestCase):
 
         os.remove(os.path.join(self.file_needs.directory, self.file_needs.name + self.file_needs.extension))
 
-    def test_if_return_the_filename_without_file_extension(self):
+    def test_when_i_check_for_extension_and_exist_return_true(self):
 
-        expect([self.orders_handling.get_order_file_name_askey_and_extension_asvalue()]).to.equal(
-            [{self.file_needs.name: self.file_needs.extension}])
+        expect(self.orders_handling.check_if_order_exist()).to.equal(True)

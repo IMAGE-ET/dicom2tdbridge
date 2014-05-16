@@ -22,21 +22,32 @@ class JobsDirectoryHandler(object):
 
     def create_skel_job_directory(self):
 
-        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is False:
+        if self.check_if_job_directory_exist() is False:
 
             try:
                 self.__os.mkdir(self.get_job_skel()["absolute_job_path"])
                 self.__os.mkdir(self.get_job_skel()["data_job_path"])
                 return True
+
             except:
                 raise
 
         else:
             return False
 
-    def delete_job_directory(self):
+    def check_if_job_directory_exist(self):
 
         if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is True:
+
+            return True
+
+        else:
+
+            return False
+
+    def delete_job_directory(self):
+
+        if self.check_if_job_directory_exist() is True:
 
             try:
                 self.__os.rmdir(self.get_job_skel()["data_job_path"])
@@ -51,21 +62,19 @@ class JobsDirectoryHandler(object):
             return False
 
 
-class OrdersFileHandler(object):
+class OrdersDirectoryHandler(object):
 
-    def __init__(self, orders_directory, order_extension, os_stat):
+    def __init__(self, orders_directory, job_name, order_extension, os_stat):
 
         self.__orders_directory = orders_directory
         self.__os = os_stat
         self.__extension = order_extension
+        self.__order_name = job_name
 
-    def get_order_file_name_askey_and_extension_asvalue(self):
+    def check_if_order_exist(self):
 
-        for orders_files_names in self.__os.listdir(self.__orders_directory):
+        if self.__os.path.exists(self.__orders_directory + "/%s" % (self.__order_name + self.__extension)):
+            return True
 
-            if orders_files_names[-4:] == self.__extension:
-
-                return {orders_files_names[:-4]: self.__extension}
-
-            else:
-                return False
+        else:
+            return False
