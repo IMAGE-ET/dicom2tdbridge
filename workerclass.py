@@ -23,62 +23,42 @@ class JobsDirectoryHandler(object):
         self.__absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
         self.__os = os_stat
 
-    def create_job_path_directory(self):
+    def get_job_skel(self):
 
-        absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
+        skel = {"absolute_job_path": self.__absolute_job_path,
+                "data_job_path": self.__absolute_job_path + "/DATA"}
 
-        if self.get_job_directory_path() is "":
-            try:
-                self.__os.mkdir(absolute_job_path)
-                return True
+        return skel
 
-            except:
-                raise
-        else:
-            return False
+    def create_skel_job_directory(self):
 
-    def create_data_job_directory(self):
-
-        if self.get_job_directory_path() is not "":
-
-            burning_data_job_path = self.get_job_directory_path() + ("/%s" % "DATA")
+        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is False:
 
             try:
-                self.__os.mkdir(burning_data_job_path)
+                self.__os.mkdir(self.get_job_skel()["absolute_job_path"])
+                self.__os.mkdir(self.get_job_skel()["data_job_path"])
                 return True
-
             except:
                 raise
+
         else:
             return False
-
-    def get_job_directory_path(self):
-
-        if self.__os.path.exists(self.__absolute_job_path) is True:
-            return str(self.__absolute_job_path)
-
-        else:
-            return ""
-
-    def get_data_job_directory_path(self):
-
-        if self.__os.path.exists(self.__absolute_job_path + "/%s" % "DATA") is True:
-
-            return str(self.__absolute_job_path + "/%s" % "DATA")
-
-        else:
-            return ""
 
     def delete_job_directory(self):
 
-        if self.get_job_directory_path() is not "":
+        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is True:
 
             try:
-                self.__os.rmdir(self.__jobs_directory + "/%s" % self.__patient_id)
+                self.__os.rmdir(self.get_job_skel()["data_job_path"])
+                self.__os.rmdir(self.get_job_skel()["absolute_job_path"])
+
                 return True
 
             except:
                 raise
+
+        else:
+            return False
 
 
 class OrdersFileHandler(object):
