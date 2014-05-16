@@ -59,9 +59,6 @@ class OrdersFileHandler(object):
         self.__extension = order_extension
 
     def get_order_file_name_askey_and_extension_asvalue(self):
-        """
-        Check if order in special exist, needs .DON, .JDF
-        """
 
         for orders_files_names in self.__os.listdir(self.__orders_directory):
 
@@ -71,8 +68,3 @@ class OrdersFileHandler(object):
 
             else:
                 return False
-
-
-
-
-
