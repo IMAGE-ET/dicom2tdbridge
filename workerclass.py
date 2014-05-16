@@ -23,7 +23,7 @@ class JobsDirectoryHandler(object):
         self.__absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
         self.__os = os_stat
 
-    def create_absolute_job_path_directory(self):
+    def create_job_path_directory(self):
 
         absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
 
@@ -32,7 +32,22 @@ class JobsDirectoryHandler(object):
                 self.__os.mkdir(absolute_job_path)
                 return True
 
-            except OSError:
+            except:
+                raise
+        else:
+            return False
+
+    def create_data_job_directory(self):
+
+        if self.get_job_directory_path() is not "":
+
+            burning_data_job_path = self.get_job_directory_path() + ("/%s" % "DATA")
+
+            try:
+                self.__os.mkdir(burning_data_job_path)
+                return True
+
+            except:
                 raise
         else:
             return False
@@ -41,6 +56,15 @@ class JobsDirectoryHandler(object):
 
         if self.__os.path.exists(self.__absolute_job_path) is True:
             return str(self.__absolute_job_path)
+
+        else:
+            return ""
+
+    def get_data_job_directory_path(self):
+
+        if self.__os.path.exists(self.__absolute_job_path + "/%s" % "DATA") is True:
+
+            return str(self.__absolute_job_path + "/%s" % "DATA")
 
         else:
             return ""

@@ -22,7 +22,8 @@ class TestJobsDirectoryHandler(TestCase):
         self.date_for_job.absolute_jobpath = self.date_for_job.directory_job + "/%s" % self.date_for_job.patient_id
 
         self.directory_creator = JobsDirectoryHandler(self.date_for_job.directory_job, self.date_for_job.patient_id, os)
-        self.directory_creator.create_absolute_job_path_directory()
+        self.directory_creator.create_job_path_directory()
+        self.directory_creator.create_data_job_directory()
 
     def tearDown(self):
 
@@ -34,11 +35,16 @@ class TestJobsDirectoryHandler(TestCase):
 
     def test_if_directory_already_exists_not_try_to_create(self):
 
-        expect([self.directory_creator.create_absolute_job_path_directory()]).to.equal([False])
+        expect([self.directory_creator.create_job_path_directory()]).to.equal([False])
 
     def test_if_job_directory_is_deleted(self):
 
         expect([self.directory_creator.delete_job_directory()]).to.equal([True])
+
+    def test_if_data_directory_for_burning_job_is_created(self):
+
+        expect([self.directory_creator.get_data_job_directory_path()]).to.equal(
+            [self.date_for_job.absolute_job_path + "/DATA"])
 
 
 class TestOrdersDirectoryHandler(TestCase):
