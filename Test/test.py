@@ -27,7 +27,7 @@ class TestJobsDirectoryHandler(TestCase):
 
         self.directory_creator.delete_job_directory()
 
-    def test_if_absolute_path_directory_is_created_in_job_directory(self):
+    def test_if_skel_directory_is_created_in_job_directory(self):
 
         expect(self.directory_creator.create_skel_job_directory()).to.equal(True)
 

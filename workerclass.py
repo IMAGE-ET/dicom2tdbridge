@@ -3,16 +3,6 @@
 __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
-"""
-
-El objetivo del modulo es implementar la lógica de colaboración con el software TDBRIDGE propietario de EPSON, que
-a traves de un sistema de escritura de ficheros, en formato (.JDF) permite implementar, en este caso, la grabación de
-estudios radiológicos con un visor DICOM incororado, a través de su hardware propietario EPSON PP100II.
-
-El modulo se encarga de la logica en la preparación de un trabajo de grabación, que incluya imágenes radiológicas,
-visor DICOM, y gestione la orden con TDBRIDGE.
-"""
-
 
 class JobsDirectoryHandler(object):
 
