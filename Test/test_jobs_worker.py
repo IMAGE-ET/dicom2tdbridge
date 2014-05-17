@@ -75,26 +75,20 @@ class TestJDFFilesHandler(TestCase):
 
     def setUp(self):
 
-        self.job_directory = "/home/izamarro/workdev/burner2/Test/temp/jobstest"
+        self.job_directory = "/home/izamarro/workdev/burner2/Test/temp/jdftest"
         self.file_name = "9991.JDF"
         self.jdf_file_path = self.job_directory + "/%s" % self.file_name.split(".")[0] + "/%s" % self.file_name
 
         self.jdf_handler = JDFFilesHandler(self.job_directory, self.file_name.split(".")[0], os)
-
-        self.directory_handler = JobsDirectoryHandler(self.job_directory,
-                                                      self.file_name.split(".")[0], os)
-
-        self.directory_handler.create_skel_job_directory()
+        self.jdf_handler.create_jdf_file()
 
     def tearDown(self):
 
-        self.directory_handler.delete_job_directory()
+        os.remove(self.jdf_file_path)
 
     def test_when_check_for_jdf_file_and_exist_return_true(self):
 
-        self.jdf_handler.create_jdf_file()
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
-        os.remove(self.jdf_file_path)
 
     def test_jdf_skel_must_have_required_information(self):
 
@@ -114,3 +108,4 @@ class TestJDFFilesHandler(TestCase):
                                              jdf_fields.get("DATA="),
                                              jdf_fields.get("REPLACE_FIELD="),
                                              jdf_fields.get("LABEL="))).to.have.keys(jdf_fields)
+
