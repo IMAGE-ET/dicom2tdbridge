@@ -95,3 +95,4 @@ class TestJDFFilesHandler(TestCase):
 
         self.jdf_handler.create_jdf_file()
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
+
