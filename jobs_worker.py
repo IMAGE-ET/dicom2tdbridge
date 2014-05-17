@@ -51,6 +51,7 @@ class JobsDirectoryHandler(object):
         except:
             raise
 
+
 class OrdersDirectoryHandler(object):
 
     def __init__(self, orders_directory, job_id, order_extension, os_stat):
@@ -95,8 +96,8 @@ class JDFFilesHandler(object):
         except:
             raise
 
-    def get_jdf_skel(self, name_of_publisher, number_of_copies, disc_type, absolute_data_path, path_of_replace_field_file,
-                     path_of_label_file):
+    def get_jdf_skel(self, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
+                     path_of_replace_field_file, path_of_label_file):
 
         jdf_skel = {"JOB_ID=": "=%s" % self.job_id,
                     "PUBLISHER=": name_of_publisher,
