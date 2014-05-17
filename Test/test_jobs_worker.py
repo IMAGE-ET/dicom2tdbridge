@@ -26,15 +26,12 @@ class TestJobsDirectoryHandler(TestCase):
 
     def tearDown(self):
 
-        self.directory_creator.delete_job_directory()
+        if self.directory_creator.check_if_job_directory_exist() is True:
+            self.directory_creator.delete_job_directory()
 
     def test_when_directory_is_created_and_check_it_return_true(self):
 
         expect(self.directory_creator.check_if_job_directory_exist()).to.equal(True)
-
-    def test_if_directory_already_exists_not_try_to_create(self):
-
-        expect(self.directory_creator.create_skel_job_directory()).to.equal(False)
 
     def test_if_skel_job_directory_is_deleted(self):
 
@@ -108,4 +105,3 @@ class TestJDFFilesHandler(TestCase):
                                              jdf_fields.get("DATA="),
                                              jdf_fields.get("REPLACE_FIELD="),
                                              jdf_fields.get("LABEL="))).to.have.keys(jdf_fields)
-

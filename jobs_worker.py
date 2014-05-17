@@ -22,18 +22,13 @@ class JobsDirectoryHandler(object):
 
     def create_skel_job_directory(self):
 
-        if self.check_if_job_directory_exist() is False:
+        try:
+            self.__os.mkdir(self.get_job_skel()["absolute_job_path"])
+            self.__os.mkdir(self.get_job_skel()["data_job_path"])
+            return True
 
-            try:
-                self.__os.mkdir(self.get_job_skel()["absolute_job_path"])
-                self.__os.mkdir(self.get_job_skel()["data_job_path"])
-                return True
-
-            except:
-                raise
-
-        else:
-            return False
+        except:
+            raise
 
     def check_if_job_directory_exist(self):
 
@@ -47,20 +42,14 @@ class JobsDirectoryHandler(object):
 
     def delete_job_directory(self):
 
-        if self.check_if_job_directory_exist() is True:
+        try:
+            self.__os.rmdir(self.get_job_skel()["data_job_path"])
+            self.__os.rmdir(self.get_job_skel()["absolute_job_path"])
 
-            try:
-                self.__os.rmdir(self.get_job_skel()["data_job_path"])
-                self.__os.rmdir(self.get_job_skel()["absolute_job_path"])
+            return True
 
-                return True
-
-            except:
-                raise
-
-        else:
-            return False
-
+        except:
+            raise
 
 class OrdersDirectoryHandler(object):
 
@@ -99,13 +88,12 @@ class JDFFilesHandler(object):
 
     def create_jdf_file(self):
 
-        if self.check_if_jdf_exist() is False:
+        try:
 
-            try:
-                with open(self.jdf_path, "w") as jdf_file:
-                    jdf_file.close()
-            except:
-                raise
+            with open(self.jdf_path, "w") as jdf_file:
+                jdf_file.close()
+        except:
+            raise
 
     def get_jdf_skel(self, name_of_publisher, number_of_copies, disc_type, absolute_data_path, path_of_replace_field_file,
                      path_of_label_file):
