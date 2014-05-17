@@ -88,11 +88,29 @@ class TestJDFFilesHandler(TestCase):
 
     def tearDown(self):
 
-        os.remove(self.jdf_file_path)
         self.directory_handler.delete_job_directory()
 
     def test_when_check_for_jdf_file_and_exist_return_true(self):
 
         self.jdf_handler.create_jdf_file()
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
+        os.remove(self.jdf_file_path)
 
+    def test_jdf_skel_must_have_required_information(self):
+
+        jdf_fields = {"JOB_ID=": "=%s" % self.file_name.split(".")[0],
+                      "PUBLISHER=": "publisher0",
+                      "COPIES=": "1",
+                      "DISC_TYPE=": "DVD",
+                      "CLOSE_DISC=": "YES",
+                      "FORMAT=": "JOLIET",
+                      "DATA=": "/path/to/dat",
+                      "REPLACE_FIELD=": "/path/to/dat",
+                      "LABEL=": "/path/to/label"}
+
+        expect(self.jdf_handler.get_jdf_skel(jdf_fields.get("PUBLISHER="),
+                                             jdf_fields.get("COPIES="),
+                                             jdf_fields.get("DISC_TYPE="),
+                                             jdf_fields.get("DATA="),
+                                             jdf_fields.get("REPLACE_FIELD="),
+                                             jdf_fields.get("LABEL="))).to.have.keys(jdf_fields)

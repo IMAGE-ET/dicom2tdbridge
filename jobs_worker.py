@@ -85,6 +85,7 @@ class JDFFilesHandler(object):
     def __init__(self, job_directory, job_id, os):
 
         self.jdf_path = job_directory + "/%s" % job_id + "/%s" % (job_id + ".JDF")
+        self.job_id = job_id
         self.__os = os
 
     def check_if_jdf_exist(self):
@@ -105,3 +106,18 @@ class JDFFilesHandler(object):
                     jdf_file.close()
             except:
                 raise
+
+    def get_jdf_skel(self, name_of_publisher, number_of_copies, disc_type, absolute_data_path, path_of_replace_field_file,
+                     path_of_label_file):
+
+        jdf_skel = {"JOB_ID=": "=%s" % self.job_id,
+                    "PUBLISHER=": name_of_publisher,
+                    "COPIES=": number_of_copies,
+                    "DISC_TYPE=": disc_type,
+                    "CLOSE_DISC=": "YES",
+                    "FORMAT=": "JOLIET",
+                    "DATA=": absolute_data_path,
+                    "REPLACE_FIELD=": path_of_replace_field_file,
+                    "LABEL=": path_of_label_file}
+
+        return jdf_skel
