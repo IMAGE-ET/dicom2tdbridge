@@ -55,8 +55,7 @@ class TestOrdersDirectoryHandler(TestCase):
         self.directory = "/home/izamarro/workdev/burner2/Test/temp/orderstest"
         self.name = "9991"
         self.extension = ".DON"
-        self.order_path = self.directory + "/%s" \
-                                                                 % self.name + self.extension
+        self.order_path = self.directory + "/%s" % self.name + self.extension
         self.orders_handling = OrdersDirectoryHandler(self.directory,
                                                       self.name, self.extension, os)
 
@@ -96,8 +95,3 @@ class TestJDFFilesHandler(TestCase):
 
         self.jdf_handler.create_jdf_file()
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
-
-
-
-
-
