@@ -75,8 +75,8 @@ class JDFFilesHandler(object):
     def __init__(self, job_directory, job_id, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
                  path_of_replace_field_file, path_of_label_file, os):
 
-        self.jdf_path = job_directory + "/%s" % job_id + "/%s" % (job_id + ".JDF")
         self.job_id = job_id
+        self.jdf_path = job_directory + "/%s" % job_id + "/%s" % (job_id + ".JDF")
         self.__os = os
         self.__name_of_publisher = name_of_publisher
         self.__number_of_copies = number_of_copies
