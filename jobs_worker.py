@@ -13,6 +13,16 @@ class JobsDirectoryHandler(object):
         self.__absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
         self.__os = os_stat
 
+    def check_if_job_directory_exist(self):
+
+        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is True:
+
+            return True
+
+        else:
+
+            return False
+
     def get_job_skel(self):
 
         skel = {"absolute_job_path": self.__absolute_job_path,
@@ -29,16 +39,6 @@ class JobsDirectoryHandler(object):
 
         except:
             raise
-
-    def check_if_job_directory_exist(self):
-
-        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is True:
-
-            return True
-
-        else:
-
-            return False
 
     def delete_job_directory(self):
 
@@ -72,11 +72,18 @@ class OrdersDirectoryHandler(object):
 
 class JDFFilesHandler(object):
 
-    def __init__(self, job_directory, job_id, os):
+    def __init__(self, job_directory, job_id, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
+                 path_of_replace_field_file, path_of_label_file, os):
 
         self.jdf_path = job_directory + "/%s" % job_id + "/%s" % (job_id + ".JDF")
         self.job_id = job_id
         self.__os = os
+        self.__name_of_publisher = name_of_publisher
+        self.__number_of_copies = number_of_copies
+        self.__disc_type = disc_type
+        self.__absolute_data_path = absolute_data_path
+        self.__path_of_replace_field_file = path_of_replace_field_file
+        self.__path_of_label_file = path_of_label_file
 
     def check_if_jdf_exist(self):
 
@@ -87,26 +94,30 @@ class JDFFilesHandler(object):
         else:
             return False
 
-    def create_jdf_file(self):
+    def get_jdf_skel(self):
 
-        try:
-
-            with open(self.jdf_path, "w") as jdf_file:
-                jdf_file.close()
-        except:
-            raise
-
-    def get_jdf_skel(self, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
-                     path_of_replace_field_file, path_of_label_file):
-
-        jdf_skel = {"JOB_ID=": "=%s" % self.job_id,
-                    "PUBLISHER=": name_of_publisher,
-                    "COPIES=": number_of_copies,
-                    "DISC_TYPE=": disc_type,
+        jdf_skel = {"JOB_ID=": "%s" % self.job_id,
+                    "PUBLISHER=": self.__name_of_publisher,
+                    "COPIES=": self.__number_of_copies,
+                    "DISC_TYPE=": self.__disc_type,
                     "CLOSE_DISC=": "YES",
                     "FORMAT=": "JOLIET",
-                    "DATA=": absolute_data_path,
-                    "REPLACE_FIELD=": path_of_replace_field_file,
-                    "LABEL=": path_of_label_file}
+                    "DATA=": self.__absolute_data_path,
+                    "REPLACE_FIELD=": self.__path_of_replace_field_file,
+                    "LABEL=": self.__path_of_label_file}
 
         return jdf_skel
+
+    def create_jdf_file(self):
+
+
+            try:
+                with open(self.jdf_path, "w") as jdf_file:
+
+                    for i in self.get_jdf_skel():
+
+                        jdf_file.write((i + self.get_jdf_skel().get(i) + "\n"))
+
+            except:
+                raise
+

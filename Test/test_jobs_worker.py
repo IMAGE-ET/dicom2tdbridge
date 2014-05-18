@@ -76,11 +76,31 @@ class TestJDFFilesHandler(TestCase):
         self.file_name = "9991.JDF"
         self.jdf_file_path = self.job_directory + "/%s" % self.file_name.split(".")[0] + "/%s" % self.file_name
 
-        self.jdf_handler = JDFFilesHandler(self.job_directory, self.file_name.split(".")[0], os)
+        self.jdf_skel = {"JOB_ID=": "%s" % self.file_name.split(".")[0],
+                         "PUBLISHER=": "publisher0",
+                         "COPIES=": "1",
+                         "DISC_TYPE=": "DVD",
+                         "CLOSE_DISC=": "YES",
+                         "FORMAT=": "JOLIET",
+                         "DATA=": "/path/to/dat",
+                         "REPLACE_FIELD=": "/path/to/dat",
+                         "LABEL=": "/path/to/label"}
+
+        self.jdf_handler = JDFFilesHandler(self.job_directory,
+                                           self.jdf_skel.get("JOB_ID="),
+                                           self.jdf_skel.get("PUBLISHER="),
+                                           self.jdf_skel.get("COPIES="),
+                                           self.jdf_skel.get("DISC_TYPE="),
+                                           self.jdf_skel.get("DATA="),
+                                           self.jdf_skel.get("REPLACE_FIELD="),
+                                           self.jdf_skel.get("LABEL="),
+                                           os)
+
         self.jdf_handler.create_jdf_file()
 
     def tearDown(self):
 
+        pass
         os.remove(self.jdf_file_path)
 
     def test_when_check_for_jdf_file_and_exist_return_true(self):
@@ -89,19 +109,4 @@ class TestJDFFilesHandler(TestCase):
 
     def test_jdf_skel_must_have_required_information(self):
 
-        jdf_fields = {"JOB_ID=": "=%s" % self.file_name.split(".")[0],
-                      "PUBLISHER=": "publisher0",
-                      "COPIES=": "1",
-                      "DISC_TYPE=": "DVD",
-                      "CLOSE_DISC=": "YES",
-                      "FORMAT=": "JOLIET",
-                      "DATA=": "/path/to/dat",
-                      "REPLACE_FIELD=": "/path/to/dat",
-                      "LABEL=": "/path/to/label"}
-
-        expect(self.jdf_handler.get_jdf_skel(jdf_fields.get("PUBLISHER="),
-                                             jdf_fields.get("COPIES="),
-                                             jdf_fields.get("DISC_TYPE="),
-                                             jdf_fields.get("DATA="),
-                                             jdf_fields.get("REPLACE_FIELD="),
-                                             jdf_fields.get("LABEL="))).to.have.keys(jdf_fields)
+        expect(self.jdf_handler.get_jdf_skel()).to.have.keys(self.jdf_skel)
