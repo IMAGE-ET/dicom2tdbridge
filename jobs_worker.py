@@ -110,7 +110,6 @@ class JDFFilesHandler(object):
 
     def create_jdf_file(self):
 
-
             try:
                 with open(self.jdf_path, "w") as jdf_file:
 
@@ -120,4 +119,3 @@ class JDFFilesHandler(object):
 
             except:
                 raise
-

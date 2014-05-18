@@ -7,7 +7,6 @@ import os
 
 from unittest import TestCase
 from expects import expect
-
 from jobs_worker import OrdersDirectoryHandler
 from jobs_worker import JobsDirectoryHandler
 from jobs_worker import JDFFilesHandler
