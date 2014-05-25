@@ -3,14 +3,17 @@
 __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
+
 import os
+import subprocess
 
 from unittest import TestCase
 from expects import expect
 
-from jobs_worker import OrdersDirectoryHandler
-from jobs_worker import JobsDirectoryHandler
-from jobs_worker import JDFFilesHandler
+from dcm4tdbridge import OrdersDirectoryHandler
+from dcm4tdbridge import JobsDirectoryHandler
+from dcm4tdbridge import JDFFilesHandler
+from dcm4tdbridge import DicomTagFile
 
 
 class TestJobsDirectoryHandler(TestCase):
@@ -110,3 +113,23 @@ class TestJDFFilesHandler(TestCase):
     def test_jdf_skel_must_have_required_information(self):
 
         expect(self.jdf_handler.get_jdf_skel()).to.have.keys(self.jdf_skel)
+
+
+class TestDicomTagFile(TestCase):
+
+    def setUp(self):
+        self.dicomtag = DicomTagFile("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/DICOM/6B3C060E",
+                                     "/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt",
+                                     subprocess,
+                                     "/home/izamarro/workdev/burner2/DATA/tools/bin",
+                                     "dcm2txt",
+                                     os)
+
+    def tearDown(self):
+        os.remove("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt")
+
+    def test_if_have_dicom_txt_info_file(self):
+
+        self.dicomtag.create_dicom_tag_file()
+        dicom_test_directory = "/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B"
+        expect(os.listdir(dicom_test_directory)).to.have("dicomtag.txt")

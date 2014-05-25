@@ -110,12 +110,26 @@ class JDFFilesHandler(object):
 
     def create_jdf_file(self):
 
-            try:
-                with open(self.jdf_path, "w") as jdf_file:
+            skel_of_jdffile = self.get_jdf_skel()
 
-                    for i in self.get_jdf_skel():
+            with open(self.jdf_path, "w") as jdf_file:
 
-                        jdf_file.write((i + self.get_jdf_skel().get(i) + "\n"))
+                for i in self.get_jdf_skel():
 
-            except:
-                raise
+                    jdf_file.write((i + skel_of_jdffile.get(i) + "\n"))
+
+
+class DicomTagFile(object):
+
+    def __init__(self, dicom_file_path, out_file_path, subprocess_control, dcm_tool_directory, tool_name, os):
+
+        self.dicom_to_parse = dicom_file_path
+        self.out_directory = out_file_path
+        self.subprocess = subprocess_control
+        self.tools_directory = dcm_tool_directory
+        self.tool = tool_name
+        self.os = os
+
+    def create_dicom_tag_file(self):
+            self.os.chdir(self.tools_directory)
+            self.subprocess.call([".//%s %s > %s" % (self.tool, self.dicom_to_parse, self.out_directory)], shell=True)
