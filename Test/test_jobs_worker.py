@@ -3,17 +3,15 @@
 __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
+import subprocess
+from unittest import TestCase
 
 import os
-import subprocess
-
-from unittest import TestCase
 from expects import expect
-
-from dcm4tdbridge import OrdersDirectoryHandler
-from dcm4tdbridge import JobsDirectoryHandler
-from dcm4tdbridge import JDFFilesHandler
-from dcm4tdbridge import DicomTagFile
+from resources.dcm4tdbridge import OrdersDirectoryHandler
+from resources.dcm4tdbridge import JobsDirectoryHandler
+from resources.dcm4tdbridge import JDFFilesHandler
+from resources.dcm4tdbridge import DicomTagFile
 
 
 class TestJobsDirectoryHandler(TestCase):
@@ -126,7 +124,8 @@ class TestDicomTagFile(TestCase):
                                      os)
 
     def tearDown(self):
-        os.remove("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt")
+        #os.remove("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt")
+        pass
 
     def test_if_have_dicom_txt_info_file(self):
 

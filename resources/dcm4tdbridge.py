@@ -132,4 +132,5 @@ class DicomTagFile(object):
 
     def create_dicom_tag_file(self):
             self.os.chdir(self.tools_directory)
-            self.subprocess.call([".//%s %s > %s" % (self.tool, self.dicom_to_parse, self.out_directory)], shell=True)
+            self.subprocess.call([".//%s -c %s > %s" % (self.tool, self.dicom_to_parse, self.out_directory)], shell=True)
+
