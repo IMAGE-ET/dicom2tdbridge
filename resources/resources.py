@@ -32,7 +32,6 @@ class JobsDirectoryHandler(object):
         self.__absolute_job_data_folder = self.__os.path.join(self.__jobs_directory, self.__patient_id, "DATA")
 
     def check_if_job_directory_exist(self):
-
         if self.__os.path.exists(self.__absolute_job_data_folder)is True:
 
             return 1
@@ -53,18 +52,18 @@ class JobsDirectoryHandler(object):
 class OrdersDirectoryHandler(object):
 
     def __init__(self, orders_directory, job_id, order_extension, os_stat):
-
         self.__orders_directory = orders_directory
         self.__os = os_stat
         self.__extension = order_extension
         self.__order_name = job_id
 
     def check_if_order_exist(self):
+        if self.__os.path.exists(self.__os.path.join(self.__orders_directory, (self.__order_name + self.__extension))):
 
-        if self.__os.path.exists(self.__orders_directory + "/%s" % (self.__order_name + self.__extension)):
             return 1
 
         else:
+
             return 0
 
 
@@ -86,13 +85,13 @@ class JDFFilesHandler(object):
     def check_if_jdf_exist(self):
         if self.__os.path.exists(self.__os.path.join(self.job_folder, "%s.JDF" % self.job_id)) is True:
 
-            return True
+            return 1
 
         else:
-            return False
+
+            return 0
 
     def get_jdf_skel(self):
-
         jdf_skel = {"JOB_ID=": "%s" % self.job_id,
                     "PUBLISHER=": self.__name_of_publisher,
                     "COPIES=": self.__number_of_copies,
@@ -106,11 +105,30 @@ class JDFFilesHandler(object):
         return jdf_skel
 
     def create_jdf_file(self):
-
             skel_of_jdffile = self.get_jdf_skel()
 
             with open(self.__os.path.join(self.job_folder, "%s.JDF" % self.job_id), "w") as jdf_file:
 
-                for i in self.get_jdf_skel():
+                for jdf_content in self.get_jdf_skel():
 
-                    jdf_file.write((i + skel_of_jdffile.get(i) + "\n"))
+                    jdf_file.write((jdf_content + skel_of_jdffile.get(jdf_content) + "\n"))
+
+
+class DCMTagParser(object):
+
+    def __init__(self, path_to_dicomfile, output_path_of_tagfile, path_to_tool, tool_name, subprocess_tool, os):
+
+        self.__dicom_file = path_to_dicomfile
+        self.__output_file = output_path_of_tagfile
+        self.__tool_path = path_to_tool
+        self.__subproces = subprocess_tool
+        self.__tool_name = tool_name
+        self.__os = os
+        self.extract_tags()
+
+    def extract_tags(self):
+        self.__os.chdir(self.__tool_path)
+        self.__subproces.call(["powershell", ".\\%s -c %s | Select-String 1450, 1462 > %s" % (self.__tool_name,
+                                                                                              self.__dicom_file,
+                                                                                              self.__output_file)],
+                              shell=True)

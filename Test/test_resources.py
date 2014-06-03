@@ -22,12 +22,15 @@
 __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
-from unittest import TestCase
 import os
+import subprocess
+from unittest import TestCase
 from expects import expect
-from resources.dcm4tdbridge import OrdersDirectoryHandler
-from resources.dcm4tdbridge import JobsDirectoryHandler
-from resources.dcm4tdbridge import JDFFilesHandler
+
+from resources.resources import OrdersDirectoryHandler
+from resources.resources import JobsDirectoryHandler
+from resources.resources import JDFFilesHandler
+from resources.resources import DCMTagParser
 
 
 class TestJobsDirectoryHandler(TestCase):
@@ -114,8 +117,26 @@ class TestJDFFilesHandler(TestCase):
     def tearDown(self):
         os.remove(self.jdf_file_path)
 
-    def test_when_check_for_jdf_file_and_exist_return_true(self):
-        expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
+    def test_when_check_for_jdf_file_and_exist_return_1(self):
+        expect(self.jdf_handler.check_if_jdf_exist()).to.equal(1)
 
     def test_jdf_skel_must_have_required_information(self):
         expect(self.jdf_handler.get_jdf_skel()).to.have.keys(self.jdf_skel)
+
+
+class TestDCMTagParser(TestCase):
+
+    def setUp(self):
+        current_dir = os.getcwd()
+        DCMTagParser(os.path.join(os.getcwd(), "temps", "testdicom.dcm"),
+                     os.path.join(os.getcwd(), "temps", "tags.txt"),
+                     os.path.join(os.getcwd(), "..", "tools", "bin"), "dcm2txt.bat", subprocess, os)
+
+        os.chdir(current_dir)
+
+    def tearDown(self):
+        os.remove(os.path.join(os.getcwd(), "temps", "tags.txt"))
+
+    def test_when_passed_an_dicom_path_must_write_pipeline_in_a_file(self):
+
+        expect(os.listdir(os.path.join(os.getcwd(), "temps"))).to.have("tags.txt")
