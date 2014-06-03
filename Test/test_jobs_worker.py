@@ -22,79 +22,72 @@
 __author__ = 'izamarro'
 __version__ = '0.0.1a'
 
-import subprocess
 from unittest import TestCase
-
 import os
 from expects import expect
 from resources.dcm4tdbridge import OrdersDirectoryHandler
 from resources.dcm4tdbridge import JobsDirectoryHandler
 from resources.dcm4tdbridge import JDFFilesHandler
-from resources.dcm4tdbridge import DicomTagFile
 
 
 class TestJobsDirectoryHandler(TestCase):
 
     def setUp(self):
-
-        self.directory_job = "/home/izamarro/workdev/burner2/Test/temp/jobstest"
+        self.directory_job = os.path.join(os.getcwd(), "temps")
         self.patient_id = "9991"
-        self.absolute_jobpath = self.directory_job + "/%s" % self.patient_id
-
+        self.absolute_jobpath = os.path.join(self.directory_job, self.patient_id)
         self.directory_creator = JobsDirectoryHandler(self.directory_job, self.patient_id, os)
         self.directory_creator.create_skel_job_directory()
 
     def tearDown(self):
-
-        if self.directory_creator.check_if_job_directory_exist() is True:
+        if self.directory_creator.check_if_job_directory_exist() == 1:
             self.directory_creator.delete_job_directory()
 
-    def test_when_directory_is_created_and_check_it_return_true(self):
+        else:
+            pass
 
-        expect(self.directory_creator.check_if_job_directory_exist()).to.equal(True)
+    def test_when_directory_is_created_and_check_it_return_1(self):
+        expect(self.directory_creator.check_if_job_directory_exist()).to.equal(1)
 
     def test_if_skel_job_directory_is_deleted(self):
-
         self.directory_creator.delete_job_directory()
-        expect([self.directory_creator.check_if_job_directory_exist()]).to.equal([False])
-
-    def test_if_dictionary_contain_job_directory_skel(self):
-
-        expect(self.directory_creator.get_job_skel()).to.have.keys(
-            {"absolute_job_path": self.absolute_jobpath,
-             "data_job_path": (self.absolute_jobpath + "/DATA")})
+        expect(self.directory_creator.check_if_job_directory_exist()).to.equal(0)
 
 
 class TestOrdersDirectoryHandler(TestCase):
 
     def setUp(self):
-
-        self.directory = "/home/izamarro/workdev/burner2/Test/temp/orderstest"
+        self.directory = os.path.join(os.getcwd(), "temps", "orders")
         self.name = "9991"
         self.extension = ".DON"
         self.order_path = self.directory + "/%s" % self.name + self.extension
         self.orders_handling = OrdersDirectoryHandler(self.directory,
                                                       self.name, self.extension, os)
 
+    def tearDown(self):
+        if self.orders_handling.check_if_order_exist() == 1:
+            os.remove(os.path.join(self.directory, self.name + self.extension))
+
+        else:
+            pass
+
+    def test_when_i_check_for_extension_and_exist_return_1(self):
         with open(self.order_path, "w") as tempfile:
             tempfile.close()
 
-    def tearDown(self):
+        expect(self.orders_handling.check_if_order_exist()).to.equal(1)
 
-        os.remove(os.path.join(self.directory, self.name + self.extension))
-
-    def test_when_i_check_for_extension_and_exist_return_true(self):
-
-        expect(self.orders_handling.check_if_order_exist()).to.equal(True)
+    def test_when_check_for_extension_and_not_exist_return_0(self):
+        expect(self.orders_handling.check_if_order_exist()).to.equal(0)
 
 
 class TestJDFFilesHandler(TestCase):
 
     def setUp(self):
 
-        self.job_directory = "/home/izamarro/workdev/burner2/Test/temp/jdftest"
+        self.job_directory = os.path.join(os.getcwd(), "temps", "orders")
         self.file_name = "9991.JDF"
-        self.jdf_file_path = self.job_directory + "/%s" % self.file_name.split(".")[0] + "/%s" % self.file_name
+        self.jdf_file_path = self.job_directory + "/%s" % self.file_name
 
         self.jdf_skel = {"JOB_ID=": "%s" % self.file_name.split(".")[0],
                          "PUBLISHER=": "publisher0",
@@ -119,35 +112,10 @@ class TestJDFFilesHandler(TestCase):
         self.jdf_handler.create_jdf_file()
 
     def tearDown(self):
-
-        pass
         os.remove(self.jdf_file_path)
 
     def test_when_check_for_jdf_file_and_exist_return_true(self):
-
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(True)
 
     def test_jdf_skel_must_have_required_information(self):
-
         expect(self.jdf_handler.get_jdf_skel()).to.have.keys(self.jdf_skel)
-
-
-class TestDicomTagFile(TestCase):
-
-    def setUp(self):
-        self.dicomtag = DicomTagFile("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/DICOM/6B3C060E",
-                                     "/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt",
-                                     subprocess,
-                                     "/home/izamarro/workdev/burner2/DATA/tools/bin",
-                                     "dcm2txt",
-                                     os)
-
-    def tearDown(self):
-        #os.remove("/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B/dicomtag.txt")
-        pass
-
-    def test_if_have_dicom_txt_info_file(self):
-
-        self.dicomtag.create_dicom_tag_file()
-        dicom_test_directory = "/home/izamarro/workdev/burner2/Test/temp/dicomtest/941CDA9B"
-        expect(os.listdir(dicom_test_directory)).to.have("dicomtag.txt")

@@ -25,50 +25,29 @@ __version__ = '0.0.1a'
 
 class JobsDirectoryHandler(object):
 
-    def __init__(self, jobs_directory, patient_id, os_stat):
-
-        self.__jobs_directory = jobs_directory
-        self.__patient_id = patient_id
-        self.__absolute_job_path = self.__jobs_directory + ("/%s" % self.__patient_id)
+    def __init__(self, jobs_folder, patient_id, os_stat):
         self.__os = os_stat
+        self.__jobs_directory = jobs_folder
+        self.__patient_id = patient_id
+        self.__absolute_job_data_folder = self.__os.path.join(self.__jobs_directory, self.__patient_id, "DATA")
 
     def check_if_job_directory_exist(self):
 
-        if self.__os.path.exists(self.get_job_skel()["absolute_job_path"]) is True:
+        if self.__os.path.exists(self.__absolute_job_data_folder)is True:
 
-            return True
+            return 1
 
         else:
 
-            return False
-
-    def get_job_skel(self):
-
-        skel = {"absolute_job_path": self.__absolute_job_path,
-                "data_job_path": self.__absolute_job_path + "/DATA"}
-
-        return skel
+            return 0
 
     def create_skel_job_directory(self):
-
-        try:
-            self.__os.mkdir(self.get_job_skel()["absolute_job_path"])
-            self.__os.mkdir(self.get_job_skel()["data_job_path"])
-            return True
-
-        except:
-            raise
+        self.__os.mkdir(self.__os.path.join(self.__jobs_directory, self.__patient_id))
+        self.__os.mkdir(self.__os.path.join(self.__absolute_job_data_folder))
 
     def delete_job_directory(self):
-
-        try:
-            self.__os.rmdir(self.get_job_skel()["data_job_path"])
-            self.__os.rmdir(self.get_job_skel()["absolute_job_path"])
-
-            return True
-
-        except:
-            raise
+        self.__os.rmdir(self.__os.path.join(self.__absolute_job_data_folder))
+        self.__os.rmdir(self.__os.path.join(self.__jobs_directory, self.__patient_id))
 
 
 class OrdersDirectoryHandler(object):
@@ -83,19 +62,19 @@ class OrdersDirectoryHandler(object):
     def check_if_order_exist(self):
 
         if self.__os.path.exists(self.__orders_directory + "/%s" % (self.__order_name + self.__extension)):
-            return True
+            return 1
 
         else:
-            return False
+            return 0
 
 
 class JDFFilesHandler(object):
 
-    def __init__(self, job_directory, job_id, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
+    def __init__(self, job_folder, job_id, name_of_publisher, number_of_copies, disc_type, absolute_data_path,
                  path_of_replace_field_file, path_of_label_file, os):
 
+        self.job_folder = job_folder
         self.job_id = job_id
-        self.jdf_path = job_directory + "/%s" % job_id + "/%s" % (job_id + ".JDF")
         self.__os = os
         self.__name_of_publisher = name_of_publisher
         self.__number_of_copies = number_of_copies
@@ -105,8 +84,7 @@ class JDFFilesHandler(object):
         self.__path_of_label_file = path_of_label_file
 
     def check_if_jdf_exist(self):
-
-        if self.__os.path.exists(self.jdf_path) is True:
+        if self.__os.path.exists(self.__os.path.join(self.job_folder, "%s.JDF" % self.job_id)) is True:
 
             return True
 
@@ -131,25 +109,8 @@ class JDFFilesHandler(object):
 
             skel_of_jdffile = self.get_jdf_skel()
 
-            with open(self.jdf_path, "w") as jdf_file:
+            with open(self.__os.path.join(self.job_folder, "%s.JDF" % self.job_id), "w") as jdf_file:
 
                 for i in self.get_jdf_skel():
 
                     jdf_file.write((i + skel_of_jdffile.get(i) + "\n"))
-
-
-class DicomTagFile(object):
-
-    def __init__(self, dicom_file_path, out_file_path, subprocess_control, dcm_tool_directory, tool_name, os):
-
-        self.dicom_to_parse = dicom_file_path
-        self.out_directory = out_file_path
-        self.subprocess = subprocess_control
-        self.tools_directory = dcm_tool_directory
-        self.tool = tool_name
-        self.os = os
-
-    def create_dicom_tag_file(self):
-            self.os.chdir(self.tools_directory)
-            self.subprocess.call([".//%s -c %s > %s" % (self.tool, self.dicom_to_parse, self.out_directory)], shell=True)
-
