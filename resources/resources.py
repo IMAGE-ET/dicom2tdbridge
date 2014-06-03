@@ -124,11 +124,14 @@ class DCMTagParser(object):
         self.__subproces = subprocess_tool
         self.__tool_name = tool_name
         self.__os = os
-        self.extract_tags()
 
-    def extract_tags(self):
+    def extract_tags_from_dicomfile(self):
         self.__os.chdir(self.__tool_path)
-        self.__subproces.call(["powershell", ".\\%s -c %s | Select-String 1450, 1462 > %s" % (self.__tool_name,
-                                                                                              self.__dicom_file,
-                                                                                              self.__output_file)],
-                              shell=True)
+        self.__subproces.call(["powershell",
+                               ".\\%s -c %s | Select-String 1450, 1462 | Out-File -Encoding unicode %s" %
+                               (self.__tool_name, self.__dicom_file, self.__output_file)], shell=True)
+
+    def extract_tags_from_tagfile(self):
+        tags = dict(patient_id=None, patient_name=None)
+
+        return tags

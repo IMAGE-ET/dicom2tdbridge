@@ -75,8 +75,8 @@ class TestOrdersDirectoryHandler(TestCase):
             pass
 
     def test_when_i_check_for_extension_and_exist_return_1(self):
-        with open(self.order_path, "w") as tempfile:
-            tempfile.close()
+        with open(self.order_path, "w") as temp_file:
+            temp_file.close()
 
         expect(self.orders_handling.check_if_order_exist()).to.equal(1)
 
@@ -128,15 +128,18 @@ class TestDCMTagParser(TestCase):
 
     def setUp(self):
         current_dir = os.getcwd()
-        DCMTagParser(os.path.join(os.getcwd(), "temps", "testdicom.dcm"),
-                     os.path.join(os.getcwd(), "temps", "tags.txt"),
-                     os.path.join(os.getcwd(), "..", "tools", "bin"), "dcm2txt.bat", subprocess, os)
+        self.dicomtag = DCMTagParser(os.path.join(os.getcwd(), "temps", "testdicom.dcm"),
+                                     os.path.join(os.getcwd(), "temps", "tags.txt"),
+                                     os.path.join(os.getcwd(), "..", "tools", "bin"), "dcm2txt.bat", subprocess, os)
 
+        self.dicomtag.extract_tags_from_dicomfile()
         os.chdir(current_dir)
 
     def tearDown(self):
         os.remove(os.path.join(os.getcwd(), "temps", "tags.txt"))
 
     def test_when_passed_an_dicom_path_must_write_pipeline_in_a_file(self):
-
         expect(os.listdir(os.path.join(os.getcwd(), "temps"))).to.have("tags.txt")
+
+    def test_when_call_a_method_for_parser_tagfile_return_dictionary(self):
+        expect(self.dicomtag.extract_tags_from_tagfile()).to.have.keys("patient_id", "patient_name")
