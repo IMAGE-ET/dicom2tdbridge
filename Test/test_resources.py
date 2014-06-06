@@ -87,7 +87,6 @@ class TestOrdersDirectoryHandler(TestCase):
 class TestJDFFilesHandler(TestCase):
 
     def setUp(self):
-
         self.job_directory = os.path.join(os.getcwd(), "temps", "orders")
         self.file_name = "9991.JDF"
         self.jdf_file_path = self.job_directory + "/%s" % self.file_name
@@ -126,20 +125,9 @@ class TestJDFFilesHandler(TestCase):
 
 class TestDCMTagParser(TestCase):
 
-    def setUp(self):
+    def test_if_return_patient_id(self):
         current_dir = os.getcwd()
-        self.dicomtag = DCMTagParser(os.path.join(os.getcwd(), "temps", "testdicom.dcm"),
-                                     os.path.join(os.getcwd(), "temps", "tags.txt"),
-                                     os.path.join(os.getcwd(), "..", "tools", "bin"), "dcm2txt.bat", subprocess, os)
+        dicom_parser = DCMTagParser(os, subprocess, os.path.join(current_dir, "temps", "testdicom.dcm"),
+                                    os.path.join(current_dir, "..", "tools", "bin"))
 
-        self.dicomtag.extract_tags_from_dicomfile()
-        os.chdir(current_dir)
-
-    def tearDown(self):
-        os.remove(os.path.join(os.getcwd(), "temps", "tags.txt"))
-
-    def test_when_passed_an_dicom_path_must_write_pipeline_in_a_file(self):
-        expect(os.listdir(os.path.join(os.getcwd(), "temps"))).to.have("tags.txt")
-
-    def test_when_call_a_method_for_parser_tagfile_return_dictionary(self):
-        expect(self.dicomtag.extract_tags_from_tagfile()).to.have.keys("patient_id", "patient_name")
+        expect(dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")

@@ -116,22 +116,29 @@ class JDFFilesHandler(object):
 
 class DCMTagParser(object):
 
-    def __init__(self, path_to_dicomfile, output_path_of_tagfile, path_to_tool, tool_name, subprocess_tool, os):
-
-        self.__dicom_file = path_to_dicomfile
-        self.__output_file = output_path_of_tagfile
-        self.__tool_path = path_to_tool
-        self.__subproces = subprocess_tool
-        self.__tool_name = tool_name
+    def __init__(self, os, subprocess, path_of_dicom_to_parse, path_to_dcm2txt_tool_folder):
         self.__os = os
+        self.__subprocess = subprocess
+        self.dicom_to_parse = path_of_dicom_to_parse
+        self.parser_tool_folder = path_to_dcm2txt_tool_folder
 
-    def extract_tags_from_dicomfile(self):
-        self.__os.chdir(self.__tool_path)
-        self.__subproces.call(["powershell",
-                               ".\\%s -c %s | Select-String 1450, 1462 | Out-File -Encoding unicode %s" %
-                               (self.__tool_name, self.__dicom_file, self.__output_file)], shell=True)
+    def get_tag(self, dicom_tag_to_extract):
+        self.__os.chdir(self.parser_tool_folder)
 
-    def extract_tags_from_tagfile(self):
-        tags = dict(patient_id=None, patient_name=None)
+        if dicom_tag_to_extract == 00100020:
+            dicom_tag_to_extract = "1462"
 
-        return tags
+        else:
+            raise Exception("Tag not recognized")
+
+        parser = self.__subprocess.Popen(["powershell", ".\dcm2txt.bat -c %s | Select-String %s" %
+                                          (self.dicom_to_parse, dicom_tag_to_extract)],
+                                         stdout=self.__subprocess.PIPE, shell=True)
+
+        parser_out = parser.stdout.read()
+
+        #Data is closed between brackets, its reformat the string.
+        brackets_positions = [parser_out.find("["), parser_out.find("]")]
+        dicom_tags = parser_out[brackets_positions[0]+1:brackets_positions[1]]
+
+        return dicom_tags
