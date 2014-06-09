@@ -127,12 +127,13 @@ class TestDCMTagParser(TestCase):
 
     def setUp(self):
         self.current_dir = os.getcwd()
+        self.dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps", "testdicom.dcm"),
+                                         os.path.join(self.current_dir, "..", "tools", "bin"))
 
+    def test_if_parse_all_lines(self):
+        expect(self.dicom_parser.get_tag_line(00100020)).to.equal("1462")
+        expect(self.dicom_parser.get_tag_line(00100010)).to.equal("1450")
 
     def test_if_return_selected_tag(self):
-        dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps", "testdicom.dcm"),
-                                    os.path.join(self.current_dir, "..", "tools", "bin"))
-
-        expect(dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")
-
-        expect(dicom_parser.get_tag(00100010)).to.equal("WRIX")
+        expect(self.dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")
+        expect(self.dicom_parser.get_tag(00100010)).to.equal("WRIX")

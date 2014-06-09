@@ -125,25 +125,22 @@ class DCMTagParser(object):
     def get_tag(self, dicom_tag_to_extract):
         self.__os.chdir(self.parser_tool_folder)
 
-        if dicom_tag_to_extract == 00100020:
-            dicom_tag_to_extract = "1462"
-
-        elif dicom_tag_to_extract == 00100010:
-            dicom_tag_to_extract = "1450"
-
-
-
-        else:
-            raise Exception("Tag not recognized")
+        dicom_tag_line = self.get_tag_line(dicom_tag_to_extract)
 
         parser = self.__subprocess.Popen(["powershell", ".\dcm2txt.bat -c %s | Select-String %s" %
-                                          (self.dicom_to_parse, dicom_tag_to_extract)],
+                                          (self.dicom_to_parse, dicom_tag_line)],
                                          stdout=self.__subprocess.PIPE, shell=True)
-
         parser_out = parser.stdout.read()
 
         #Data is closed between brackets, its reformat the string.
         brackets_positions = [parser_out.find("["), parser_out.find("]")]
-        dicom_tags = parser_out[brackets_positions[0]+1:brackets_positions[1]]
+        dicom_tag_containt = parser_out[brackets_positions[0]+1:brackets_positions[1]]
 
-        return dicom_tags
+        return dicom_tag_containt
+
+    def get_tag_line(self, tag):
+
+        dicom_tags = {00100020: "1462",
+                      00100010: "1450"}
+
+        return dicom_tags.get(tag)
