@@ -24,6 +24,8 @@ __version__ = '0.0.1a'
 
 import os
 import subprocess
+import shutil
+
 from unittest import TestCase
 from expects import expect
 
@@ -39,22 +41,19 @@ class TestJobsDirectoryHandler(TestCase):
         self.directory_job = os.path.join(os.getcwd(), "temps")
         self.patient_id = "9991"
         self.absolute_jobpath = os.path.join(self.directory_job, self.patient_id)
-        self.directory_creator = JobsDirectoryHandler(self.directory_job, self.patient_id, os)
+        self.directory_creator = JobsDirectoryHandler(self.directory_job, os.path.join(os.getcwd(), "..", "viewer"),
+                                                      self.patient_id, os, shutil)
         self.directory_creator.create_skel_job_directory()
 
     def tearDown(self):
         if self.directory_creator.check_if_job_directory_exist() == 1:
-            self.directory_creator.delete_job_directory()
+            shutil.rmtree("temps/9991")
 
         else:
             pass
 
     def test_when_directory_is_created_and_check_it_return_1(self):
         expect(self.directory_creator.check_if_job_directory_exist()).to.equal(1)
-
-    def test_if_skel_job_directory_is_deleted(self):
-        self.directory_creator.delete_job_directory()
-        expect(self.directory_creator.check_if_job_directory_exist()).to.equal(0)
 
 
 class TestOrdersDirectoryHandler(TestCase):

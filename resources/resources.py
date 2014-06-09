@@ -25,10 +25,12 @@ __version__ = '0.0.1a'
 
 class JobsDirectoryHandler(object):
 
-    def __init__(self, jobs_folder, patient_id, os_stat):
+    def __init__(self, jobs_folder, viewer_absolute_path, patient_id,  os_stat, shutil):
         self.__os = os_stat
         self.__jobs_directory = jobs_folder
         self.__patient_id = patient_id
+        self.viewer = viewer_absolute_path
+        self.__shutil = shutil
         self.__absolute_job_data_folder = self.__os.path.join(self.__jobs_directory, self.__patient_id, "DATA")
 
     def check_if_job_directory_exist(self):
@@ -41,12 +43,8 @@ class JobsDirectoryHandler(object):
             return 0
 
     def create_skel_job_directory(self):
-        self.__os.mkdir(self.__os.path.join(self.__jobs_directory, self.__patient_id))
-        self.__os.mkdir(self.__os.path.join(self.__absolute_job_data_folder))
-
-    def delete_job_directory(self):
-        self.__os.rmdir(self.__os.path.join(self.__absolute_job_data_folder))
-        self.__os.rmdir(self.__os.path.join(self.__jobs_directory, self.__patient_id))
+        #Create Job Folder, with Patient ID
+        self.__shutil.copytree(self.viewer, self.__absolute_job_data_folder)
 
 
 class OrdersDirectoryHandler(object):
