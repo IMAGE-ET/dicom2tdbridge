@@ -7,10 +7,11 @@ Python DICOM Burner colaborator APP , for EPSON TDBRIDGE Software.
 - Software Requeriments:
 
     - PowerShell 2.0 or higher
-    - Dcm4che2 ToolKit
-    - Epson TD-Bridge
-    - Python 2.7
+    - Dcm4che2 ToolKit : http://sourceforge.net/projects/dcm4che/files/dcm4che2/2.0.28/
+    - Epson TD-Bridge : With EPSON-ROBOT
+    - Python 2.7 : https://www.python.org/download/windows
     - Windows 7 or higher
+    - Portable Viewer : http://sourceforge.net/projects/dcm4che/files/Weasis/
 
 - Hardware Requeriments:
 
