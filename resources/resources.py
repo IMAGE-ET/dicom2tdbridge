@@ -128,6 +128,11 @@ class DCMTagParser(object):
         if dicom_tag_to_extract == 00100020:
             dicom_tag_to_extract = "1462"
 
+        elif dicom_tag_to_extract == 00100010:
+            dicom_tag_to_extract = "1450"
+
+
+
         else:
             raise Exception("Tag not recognized")
 

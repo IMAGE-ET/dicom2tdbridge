@@ -125,9 +125,14 @@ class TestJDFFilesHandler(TestCase):
 
 class TestDCMTagParser(TestCase):
 
-    def test_if_return_patient_id(self):
-        current_dir = os.getcwd()
-        dicom_parser = DCMTagParser(os, subprocess, os.path.join(current_dir, "temps", "testdicom.dcm"),
-                                    os.path.join(current_dir, "..", "tools", "bin"))
+    def setUp(self):
+        self.current_dir = os.getcwd()
+
+
+    def test_if_return_selected_tag(self):
+        dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps", "testdicom.dcm"),
+                                    os.path.join(self.current_dir, "..", "tools", "bin"))
 
         expect(dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")
+
+        expect(dicom_parser.get_tag(00100010)).to.equal("WRIX")
