@@ -33,13 +33,14 @@ from resources.resources import OrdersDirectoryHandler
 from resources.resources import JobsDirectoryHandler
 from resources.resources import JDFFilesHandler
 from resources.resources import DCMTagParser
+from resources.resources import DCMPathHandler
 
 
 class TestJobsDirectoryHandler(TestCase):
 
     def setUp(self):
         self.directory_job = os.path.join(os.getcwd(), "temps")
-        self.patient_id = "9991"
+        self.patient_id = "7rAgWJ."
         self.absolute_jobpath = os.path.join(self.directory_job, self.patient_id)
         self.directory_creator = JobsDirectoryHandler(self.directory_job, os.path.join(os.getcwd(), "..", "viewer"),
                                                       self.patient_id, os, shutil)
@@ -47,7 +48,7 @@ class TestJobsDirectoryHandler(TestCase):
 
     def tearDown(self):
         if self.directory_creator.check_if_job_directory_exist() == 1:
-            shutil.rmtree("temps/9991")
+            shutil.rmtree("temps/7rAgWJ.")
 
         else:
             pass
@@ -59,8 +60,8 @@ class TestJobsDirectoryHandler(TestCase):
 class TestOrdersDirectoryHandler(TestCase):
 
     def setUp(self):
-        self.directory = os.path.join(os.getcwd(), "temps", "orders")
-        self.name = "9991"
+        self.directory = os.path.join(os.getcwd(), "temps", "job")
+        self.name = "7rAgWJ."
         self.extension = ".DON"
         self.order_path = self.directory + "/%s" % self.name + self.extension
         self.orders_handling = OrdersDirectoryHandler(self.directory,
@@ -86,8 +87,8 @@ class TestOrdersDirectoryHandler(TestCase):
 class TestJDFFilesHandler(TestCase):
 
     def setUp(self):
-        self.job_directory = os.path.join(os.getcwd(), "temps", "orders")
-        self.file_name = "9991.JDF"
+        self.job_directory = os.path.join(os.getcwd(), "temps")
+        self.file_name = "7rAgWJ.JDF"
         self.jdf_file_path = self.job_directory + "/%s" % self.file_name
 
         self.jdf_skel = {"JOB_ID=": "%s" % self.file_name.split(".")[0],
@@ -126,7 +127,8 @@ class TestDCMTagParser(TestCase):
 
     def setUp(self):
         self.current_dir = os.getcwd()
-        self.dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps", "testdicom.dcm"),
+        self.dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps",
+                                                                      "dicom", "testdicom.dcm"),
                                          os.path.join(self.current_dir, "..", "tools", "bin"))
 
     def test_if_parse_all_lines(self):
@@ -136,3 +138,26 @@ class TestDCMTagParser(TestCase):
     def test_if_return_selected_tag(self):
         expect(self.dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")
         expect(self.dicom_parser.get_tag(00100010)).to.equal("WRIX")
+
+
+class TestDCMPathHandler(TestCase):
+
+    def setUp(self):
+        dicom_folder_absolute_path = os.path.join(os.getcwd(), "temps", "dicom")
+        absolute_out_path = os.path.join(os.getcwd(), "temps", "job", "dicom")
+        self.dicom_handler = DCMPathHandler(dicom_folder_absolute_path, absolute_out_path, shutil, os)
+
+    def tearDown(self):
+        if os.path.isdir(os.path.join(os.getcwd(), "temps", "job", "dicom")) is True:
+            shutil.rmtree(os.path.join(os.getcwd(), "temps", "job", "dicom"))
+
+        else:
+            pass
+
+    def test_if_move_dicoms_folder(self):
+        self.dicom_handler.add_dicom_to_viewer()
+
+        expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("dicom")
+
+    def test_if_count_dicoms_in_folder(self):
+        expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(5)

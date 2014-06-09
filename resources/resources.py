@@ -142,3 +142,20 @@ class DCMTagParser(object):
                       00100010: "1450"}
 
         return dicom_tags.get(tag)
+
+
+class DCMPathHandler(object):
+
+    def __init__(self, dicom_folder_absolute_path, absolute_out_path, shutil, os):
+        self.__os = os
+        self.__shutil = shutil
+        self._dicom_path = dicom_folder_absolute_path
+        self._viewer_path = absolute_out_path
+
+    def add_dicom_to_viewer(self):
+        self.__shutil.copytree(self._dicom_path, self._viewer_path)
+
+    def get_number_of_dicoms_arrived(self):
+        number = len(range(len(self.__os.listdir(self._dicom_path))))
+
+        return number
