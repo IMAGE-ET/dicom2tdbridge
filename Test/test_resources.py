@@ -53,7 +53,7 @@ class TestJobsDirectoryHandler(TestCase):
         else:
             pass
 
-    def test_when_directory_is_created_and_check_it_return_1(self):
+    def test_it_must_return_1_if_directory_is_created(self):
         expect(self.directory_creator.check_if_job_directory_exist()).to.equal(1)
 
 
@@ -74,13 +74,13 @@ class TestOrdersDirectoryHandler(TestCase):
         else:
             pass
 
-    def test_when_i_check_for_extension_and_exist_return_1(self):
+    def test_it_must_return_1_if_order_exist(self):
         with open(self.order_path, "w") as temp_file:
             temp_file.close()
 
         expect(self.orders_handling.check_if_order_exist()).to.equal(1)
 
-    def test_when_check_for_extension_and_not_exist_return_0(self):
+    def test_it_must_return_0_if_order_not_exist(self):
         expect(self.orders_handling.check_if_order_exist()).to.equal(0)
 
 
@@ -116,10 +116,10 @@ class TestJDFFilesHandler(TestCase):
     def tearDown(self):
         os.remove(self.jdf_file_path)
 
-    def test_when_check_for_jdf_file_and_exist_return_1(self):
+    def test_it_must_retrun_1_if_JDF_exist(self):
         expect(self.jdf_handler.check_if_jdf_exist()).to.equal(1)
 
-    def test_jdf_skel_must_have_required_information(self):
+    def test_it_must_return_jdf_required_information(self):
         expect(self.jdf_handler.get_jdf_skel()).to.have.keys(self.jdf_skel)
 
 
@@ -135,11 +135,11 @@ class TestDCMTagParser(TestCase):
     def tearDown(self):
         os.chdir(self.current_dir)
 
-    def test_if_parse_all_lines(self):
+    def test_it_must_return_parsed_lines(self):
         expect(self.dicom_parser.get_tag_line(00100020)).to.equal("1462")
         expect(self.dicom_parser.get_tag_line(00100010)).to.equal("1450")
 
-    def test_if_return_selected_tag(self):
+    def test_it_must_return_selected_tags(self):
         expect(self.dicom_parser.get_tag(00100020)).to.equal("7rAgWJ.")
         expect(self.dicom_parser.get_tag(00100010)).to.equal("WRIX")
 
@@ -158,10 +158,10 @@ class TestDCMPathHandler(TestCase):
         else:
             pass
 
-    def test_if_move_dicoms_folder(self):
+    def test_it_must_move_dicom_folders(self):
         self.dicom_handler.add_dicom_to_viewer()
 
         expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("dicom")
 
-    def test_if_count_dicoms_in_folder(self):
+    def test_it_must_return_number_of_dicom_in_folder(self):
         expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(12)
