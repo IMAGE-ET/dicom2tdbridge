@@ -40,16 +40,16 @@ from resources.resources import ViewerHandler
 class TestJobsDirectoryHandler(TestCase):
 
     def setUp(self):
-        self.directory_job = os.path.join(os.getcwd(), "temps")
+        self.directory_job = os.path.join(os.getcwd(), "temps", "jobs")
         self.patient_id = "7rAgWJ."
         self.absolute_jobpath = os.path.join(self.directory_job, self.patient_id)
         self.directory_creator = JobsDirectoryHandler(self.directory_job, os.path.join(os.getcwd(), "..", "viewer"),
-                                                      self.patient_id, os, shutil)
+                                                      self.patient_id, os)
         self.directory_creator.create_skel_job_directory()
 
     def tearDown(self):
         if self.directory_creator.check_if_job_directory_exist() == 1:
-            shutil.rmtree("temps/7rAgWJ.")
+            shutil.rmtree("temps/jobs/7rAgWJ.")
 
         else:
             pass
@@ -61,7 +61,7 @@ class TestJobsDirectoryHandler(TestCase):
 class TestOrdersDirectoryHandler(TestCase):
 
     def setUp(self):
-        self.directory = os.path.join(os.getcwd(), "temps", "job")
+        self.directory = os.path.join(os.getcwd(), "temps", "jobs")
         self.name = "7rAgWJ"
         self.extension = ".DON"
         self.order_path = self.directory + "\\%s" % self.name + self.extension
@@ -149,12 +149,12 @@ class TestDCMPathHandler(TestCase):
 
     def setUp(self):
         dicom_folder_absolute_path = os.path.join(os.getcwd(), "temps", "dicom")
-        absolute_out_path = os.path.join(os.getcwd(), "temps", "job", "dicom")
+        absolute_out_path = os.path.join(os.getcwd(), "temps", "jobs", "dicom")
         self.dicom_handler = DCMPathHandler(dicom_folder_absolute_path, absolute_out_path, shutil, os)
 
     def tearDown(self):
-        if os.path.isdir(os.path.join(os.getcwd(), "temps", "job", "dicom")) is True:
-            shutil.rmtree(os.path.join(os.getcwd(), "temps", "job", "dicom"))
+        if os.path.isdir(os.path.join(os.getcwd(), "temps", "jobs", "dicom")) is True:
+            shutil.rmtree(os.path.join(os.getcwd(), "temps", "jobs", "dicom"))
 
         else:
             pass
@@ -162,7 +162,7 @@ class TestDCMPathHandler(TestCase):
     def test_it_must_move_dicom_folders(self):
         self.dicom_handler.add_dicom_to_viewer()
 
-        expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("dicom")
+        expect(os.listdir(os.path.join(os.getcwd(), "temps", "jobs"))).to.have("dicom")
 
     def test_it_must_return_number_of_dicom_in_folder(self):
         expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(12)
@@ -172,12 +172,12 @@ class TestViewerHandler(TestCase):
 
     def setUp(self):
         viewer_path = os.path.join(os.getcwd(), "..", "viewer")
-        out_path = os.path.join(os.getcwd(), "temps", "job", "viewer")
+        out_path = os.path.join(os.getcwd(), "temps", "jobs", "DATA")
         self.viewer_handler = ViewerHandler(viewer_path, out_path, shutil, os)
 
     def tearDown(self):
-        if os.path.isdir(os.path.join(os.getcwd(), "temps", "job", "viewer")) is True:
-            shutil.rmtree(os.path.join(os.getcwd(), "temps", "job", "viewer"))
+        if os.path.isdir(os.path.join(os.getcwd(), "temps", "jobs", "DATA")) is True:
+            shutil.rmtree(os.path.join(os.getcwd(), "temps", "jobs", "DATA"))
 
         else:
             pass
@@ -185,4 +185,4 @@ class TestViewerHandler(TestCase):
     def test_it_must_move_viewer_folder(self):
         self.viewer_handler.add_viewer()
 
-        expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("viewer")
+        expect(os.listdir(os.path.join(os.getcwd(), "temps", "jobs"))).to.have("DATA")
