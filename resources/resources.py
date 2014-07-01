@@ -122,8 +122,6 @@ class DCMTagParser(object):
         self.parser_tool_folder = path_to_dcm2txt_tool_folder
 
     def get_tag(self, dicom_tag_to_extract):
-
-
         dicom_tag_line = self.get_tag_line(dicom_tag_to_extract)
 
         parser = self.__subprocess.Popen(["powershell", ".\dcm2txt.bat -c %s | Select-String %s" %
@@ -137,7 +135,8 @@ class DCMTagParser(object):
 
         return dicom_tag_containt
 
-    def get_tag_line(self, tag):
+    
+    def get_tag_line(tag):
 
         dicom_tags = {00100020: "1462",
                       00100010: "1450"}
@@ -154,9 +153,29 @@ class DCMPathHandler(object):
         self._viewer_path = absolute_out_path
 
     def add_dicom_to_viewer(self):
-        self.__shutil.copytree(self._dicom_path, self._viewer_path)
+        try:
+            self.__shutil.copytree(self._dicom_path, self._viewer_path)
+
+        except:
+            raise
 
     def get_number_of_dicoms_arrived(self):
         number = len(range(len(self.__os.listdir(self._dicom_path))))
 
         return number
+
+
+class ViewerHandler(object):
+
+    def __init__(self, viewer_path, out_path, shutil, os):
+        self.__viewer_path = viewer_path
+        self.__out_path = out_path
+        self.__os = os
+        self.__shutil = shutil
+
+    def add_viewer(self):
+        try:
+            self.__shutil.copytree(self.__viewer_path, self.__out_path)
+
+        except:
+            raise

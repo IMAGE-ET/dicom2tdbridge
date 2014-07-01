@@ -34,6 +34,7 @@ from resources.resources import JobsDirectoryHandler
 from resources.resources import JDFFilesHandler
 from resources.resources import DCMTagParser
 from resources.resources import DCMPathHandler
+from resources.resources import ViewerHandler
 
 
 class TestJobsDirectoryHandler(TestCase):
@@ -165,3 +166,23 @@ class TestDCMPathHandler(TestCase):
 
     def test_it_must_return_number_of_dicom_in_folder(self):
         expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(12)
+
+
+class TestViewerHandler(TestCase):
+
+    def setUp(self):
+        viewer_path = os.path.join(os.getcwd(), "..", "viewer")
+        out_path = os.path.join(os.getcwd(), "temps", "job", "viewer")
+        self.viewer_handler = ViewerHandler(viewer_path, out_path, shutil, os)
+
+    def tearDown(self):
+        if os.path.isdir(os.path.join(os.getcwd(), "temps", "job", "viewer")) is True:
+            shutil.rmtree(os.path.join(os.getcwd(), "temps", "job", "viewer"))
+
+        else:
+            pass
+
+    def test_it_must_move_viewer_folder(self):
+        self.viewer_handler.add_viewer()
+
+        expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("viewer")
