@@ -61,9 +61,9 @@ class TestOrdersDirectoryHandler(TestCase):
 
     def setUp(self):
         self.directory = os.path.join(os.getcwd(), "temps", "job")
-        self.name = "7rAgWJ."
+        self.name = "7rAgWJ"
         self.extension = ".DON"
-        self.order_path = self.directory + "/%s" % self.name + self.extension
+        self.order_path = self.directory + "\\%s" % self.name + self.extension
         self.orders_handling = OrdersDirectoryHandler(self.directory,
                                                       self.name, self.extension, os)
 
@@ -130,6 +130,10 @@ class TestDCMTagParser(TestCase):
         self.dicom_parser = DCMTagParser(os, subprocess, os.path.join(self.current_dir, "temps",
                                                                       "dicom", "testdicom.dcm"),
                                          os.path.join(self.current_dir, "..", "tools", "bin"))
+        os.chdir(os.path.join(self.current_dir, "..", "tools", "bin"))
+
+    def tearDown(self):
+        os.chdir(self.current_dir)
 
     def test_if_parse_all_lines(self):
         expect(self.dicom_parser.get_tag_line(00100020)).to.equal("1462")
@@ -160,4 +164,4 @@ class TestDCMPathHandler(TestCase):
         expect(os.listdir(os.path.join(os.getcwd(), "temps", "job"))).to.have("dicom")
 
     def test_if_count_dicoms_in_folder(self):
-        expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(5)
+        expect(self.dicom_handler.get_number_of_dicoms_arrived()).to.equal(12)

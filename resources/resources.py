@@ -56,6 +56,7 @@ class OrdersDirectoryHandler(object):
         self.__order_name = job_id
 
     def check_if_order_exist(self):
+
         if self.__os.path.exists(self.__os.path.join(self.__orders_directory, (self.__order_name + self.__extension))):
 
             return 1
@@ -121,7 +122,7 @@ class DCMTagParser(object):
         self.parser_tool_folder = path_to_dcm2txt_tool_folder
 
     def get_tag(self, dicom_tag_to_extract):
-        self.__os.chdir(self.parser_tool_folder)
+
 
         dicom_tag_line = self.get_tag_line(dicom_tag_to_extract)
 
